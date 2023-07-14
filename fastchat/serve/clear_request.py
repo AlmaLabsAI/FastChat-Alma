@@ -2,7 +2,8 @@
 Use FastChat with request.
 
 Usage:
-from fastchat.serve.clear_request.py import get_response
+from fastchat.serve.clear_request import get_response
+
 response = get_response("Hello! Who are you?")
 print(response)
 """
