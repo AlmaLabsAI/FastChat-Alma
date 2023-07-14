@@ -4,7 +4,7 @@ from typing import Optional  # Добавьте эту строку
 
 from fastchat.serve.clear_request import get_response
 
-logger.info("am here")
+# logger.info("am here")
 output = get_response("TEST")
 
 
