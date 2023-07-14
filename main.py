@@ -17,6 +17,5 @@ def predict(item, run_id, logger):
     item = Item(**item)
     output = get_response(item.prompt)
     logger.info("Generated text: " + output)
-    return output
-
+    return {"Prediction": output}
 
