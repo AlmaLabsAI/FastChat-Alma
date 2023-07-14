@@ -1,10 +1,22 @@
-git+https://github.com/huggingface/peft.git
-git+https://github.com/huggingface/transformers.git
-git+https://github.com/huggingface/accelerate.git
-bitsandbytes
-evaluate
+accelerate
+fastapi
+gradio==3.35.2
+httpx
+markdown2[all]
+nh3
 numpy
+peft
+prompt_toolkit>=3.0.0
+pydantic<=2.0
+requests
+rich>=10.0.0
 sentencepiece
-datasets
+shortuuid
+tiktoken
+tokenizers>=0.12.1
 torch
-scipy
+transformers>=4.28.0,<4.29.0
+uvicorn
+wandb
+black==23.3.0; extra == 'dev'
+pylint==2.8.2; extra == 'dev'
