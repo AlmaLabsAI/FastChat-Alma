@@ -1,66 +1,42 @@
-"""
-Use FastChat with request.
+# Example
+#
+# from fastchat.serve.huggingface_api import generate_response
+#
+# message = "Hello! Who are you?"
+# response = generate_response(message)
+# print(response)
 
-Usage:
-from fastchat.serve.clear_request import get_response
 
-response = get_response("Hello! Who are you?")
-print(response)
-"""
+
 import argparse
 import json
-
+from vllm import LLM, SamplingParams
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
-
 from fastchat.model import load_model, get_conversation_template, add_model_args
 
+def generate_response(message, model_path='lmsys/vicuna-7b-v1.3', temperature=0.7, repetition_penalty=1.0, max_new_tokens=512, debug=False):
 
-@torch.inference_mode()
-def get_response(prompt):
-    model_path = "lmsys/vicuna-7b-v1.3"
-    device = "cuda"
-    num_gpus = 1
-    max_gpu_memory = 1
-    load_8bit = True
-    cpu_offloading = False
-    debug = False
-    temperature = 0.7
-    repetition_penalty = 1.0
-    max_new_tokens = 512
-    
-    model, tokenizer = load_model(
-        model_path,
-        device,
-        num_gpus,
-        max_gpu_memory,
-        load_8bit,
-        cpu_offloading,
-        debug=debug,
-    )
+    @torch.inference_mode()
+    def _main(message, model_path, temperature, repetition_penalty, max_new_tokens, debug):
 
-    conv = get_conversation_template(model_path)
-    conv.append_message(conv.roles[0], prompt)
-    conv.append_message(conv.roles[1], None)
-    prompt = conv.get_prompt()
+        sampling_params = SamplingParams(temperature=temperature, top_p=0.95)
+        llm = LLM(model=model_path, tokenizer="hf-internal-testing/llama-tokenizer")
 
-    input_ids = tokenizer([prompt]).input_ids
-    
-    if "t5" in model_path and repetition_penalty == 1.0:
-        repetition_penalty = 1.2
-    output_ids = model.generate(
-        torch.as_tensor(input_ids).cuda(),
-        do_sample=True,
-        temperature=temperature,
-        repetition_penalty=repetition_penalty,
-        max_new_tokens=max_new_tokens,
-    )
-    if model.config.is_encoder_decoder:
-        output_ids = output_ids[0]
-    else:
-        output_ids = output_ids[0][len(input_ids[0]) :]
-    outputs = tokenizer.decode(
-        output_ids, skip_special_tokens=True, spaces_between_special_tokens=False
-    )
+        msg = message
 
-    return outputs
+        conv = get_conversation_template(model_path)
+        conv.append_message(conv.roles[0], msg)
+        conv.append_message(conv.roles[1], None)
+        prompt = conv.get_prompt()
+
+        outputs = llm.generate(prompt, sampling_params)
+        generated_text = "TEST"
+        for output in outputs:
+            generated_text = output.outputs[0].text
+
+        return generated_text
+
+    return _main(message, model_path, temperature, repetition_penalty, max_new_tokens, debug)
+
+

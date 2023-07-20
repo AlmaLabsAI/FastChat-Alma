@@ -60,16 +60,19 @@ class BaseModelAdapter:
                 model_path,
                 use_fast=self.use_fast_tokenizer,
                 revision=revision,
+                cache_dir="/persistent-storage/segment-anything/"
             )
         except TypeError:
             tokenizer = AutoTokenizer.from_pretrained(
                 model_path,
                 use_fast=False,
                 revision=revision,
+                ache_dir="/persistent-storage/segment-anything/"
             )
 
         model = AutoModelForCausalLM.from_pretrained(
-            model_path, low_cpu_mem_usage=True, **from_pretrained_kwargs
+            model_path, low_cpu_mem_usage=True, **from_pretrained_kwargs,cache_dir="/persistent-storage/segment-anything/",
+
         )
         return model, tokenizer
 
@@ -478,6 +481,7 @@ class VicunaAdapter(BaseModelAdapter):
             model_path,
             low_cpu_mem_usage=True,
             **from_pretrained_kwargs,
+            cache_dir="/persistent-storage/segment-anything/"
         )
         self.raise_warning_for_old_weights(model)
         return model, tokenizer
