@@ -18,6 +18,6 @@ torch
 transformers>=4.28.0,<4.29.0
 uvicorn
 wandb
-install vllm
+vllm
 black==23.3.0; extra == 'dev'
 pylint==2.8.2; extra == 'dev'
