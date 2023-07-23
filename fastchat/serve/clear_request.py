@@ -26,9 +26,10 @@ def generate_response(message_list, sampling_params, llm, model_path='lmsys/vicu
         prompt = prompt + additional_text
 
         print(f"PROMPT = {prompt}")
+        generated_text = "TEST"
+
 
         outputs = llm.generate(prompt, sampling_params)
-        generated_text = "TEST"
         for output in outputs:
             generated_text = output.outputs[0].text
 
