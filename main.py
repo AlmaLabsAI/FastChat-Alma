@@ -24,7 +24,7 @@ sampling_params = SamplingParams(n=1,
 
 
 class Item(BaseModel):
-    prompt: List[Dict[str, str]]
+    prompt: str
     max_length: Optional[int] = 200
     temperature: Optional[float] = 0.5
     top_p: Optional[float] = 1.0
@@ -37,4 +37,4 @@ def predict(item, run_id, logger):
     item = Item(**item)
     response = generate_response(item.prompt, sampling_params, llm)
     print(response)
-    return {"Prediction": response}
+    return {"Prediction": "test_for_test"}

@@ -8,32 +8,32 @@ def generate_response(message_list, sampling_params, llm, model_path='lmsys/vicu
 
     @torch.inference_mode()
     def _main(message_list, sampling_params, llm, model_path, temperature, repetition_penalty, max_new_tokens, debug):
-        conv = get_conversation_template("lmsys/vicuna-7b-v1.3")
+        # conv = get_conversation_template("lmsys/vicuna-7b-v1.3")
+        #
+        # for message in message_list:
+        #     msg_role = message["role"]
+        #     if msg_role == "system":
+        #         conv.system = message["content"]
+        #     elif msg_role == "user":
+        #         conv.append_message(conv.roles[0], message["content"])
+        #     elif msg_role == "assistant":
+        #         conv.append_message(conv.roles[1], message["content"])
+        #     else:
+        #         raise ValueError(f"Unknown role: {msg_role}")
+        #
+        # prompt = conv.get_prompt()
+        # additional_text = "</s>ASSISTANT:"
+        # prompt = prompt + additional_text
+        #
+        # print(f"PROMPT = {prompt}")
+        # generated_text = "TEST"
 
-        for message in message_list:
-            msg_role = message["role"]
-            if msg_role == "system":
-                conv.system = message["content"]
-            elif msg_role == "user":
-                conv.append_message(conv.roles[0], message["content"])
-            elif msg_role == "assistant":
-                conv.append_message(conv.roles[1], message["content"])
-            else:
-                raise ValueError(f"Unknown role: {msg_role}")
 
-        prompt = conv.get_prompt()
-        additional_text = "</s>ASSISTANT:"
-        prompt = prompt + additional_text
-
-        print(f"PROMPT = {prompt}")
-        generated_text = "TEST"
-
-
-        outputs = llm.generate(prompt, sampling_params)
+        outputs = llm.generate(message_list, sampling_params)
         for output in outputs:
             generated_text = output.outputs[0].text
 
-        generated_text = generated_text.replace("</s>", "")
+        # generated_text = generated_text.replace("</s>", "")
         return generated_text
 
     return _main(message_list, sampling_params, llm, model_path, temperature, repetition_penalty, max_new_tokens, debug)
